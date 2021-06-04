@@ -5,7 +5,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 
 app = Flask(__name__, static_url_path='', static_folder='../build/')
-app.config.from_json("config.json")
 api = Api(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
