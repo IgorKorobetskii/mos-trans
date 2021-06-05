@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const LoginForm = ({setAuth}:{setAuth:any})=> {
+const LoginForm = ({ setAuth }: { setAuth: any }) => {
   const [test, setTest] = useState('')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -13,7 +13,8 @@ const LoginForm = ({setAuth}:{setAuth:any})=> {
       headers: { 'Content-Type': 'application/json' }
     })
     if (response.status === 200) {
-      setAuth({username, password})
+      setAuth({ username, password })
+      return;
     }
     const data = await response.json()
     setTest(JSON.stringify(data.message))
@@ -24,7 +25,7 @@ const LoginForm = ({setAuth}:{setAuth:any})=> {
       <h3>Login</h3>
       <p>{test}</p>
       <input type="text" name="username" id="username" value={username} onChange={(event) => setUsername(event.target.value)} placeholder="username" />
-      <input type="password" name="password" id="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="password"/>
+      <input type="password" name="password" id="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="password" />
       <button type="submit">Submit</button>
     </form>
   )

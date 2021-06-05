@@ -21,7 +21,7 @@ function RegisterForm() {
       <h3>Register</h3>
       <p>{test}</p>
       <input type="text" name="username" id="username" value={username} onChange={(event) => setUsername(event.target.value)} placeholder="username" />
-      <input type="password" name="password" id="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="password"/>
+      <input type="password" name="password" id="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="password" />
       <button type="submit">Submit</button>
     </form>
   )

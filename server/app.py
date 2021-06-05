@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask.helpers import send_from_directory
 from flask_restful import Resource, Api, reqparse
 from flask_sqlalchemy import SQLAlchemy
@@ -20,7 +20,7 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % self.username
 
-    def as_dict(self):
+    def serialize(self):
         return {'id': self.id, 'username': self.username}
 
 
@@ -40,7 +40,7 @@ class Register(Resource):
                         password=args['password'])
         db.session.add(new_user)
         db.session.commit()
-        return {'message': new_user.as_dict()}, 200
+        return {'message': new_user.serialize()}, 200
 
 
 class Login(Resource):
@@ -60,8 +60,28 @@ class Login(Resource):
         return {'message': 'Invalid username or password'}, 401
 
 
+class UserList(Resource):
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('Authorization', location='headers')
+        args = parser.parse_args()
+        print(args)
+        if args.Authorization == None:
+            return {'message': 'Not authorized'}, 401
+
+        [username, password] = args.Authorization.split(' ')[1].split(',')
+
+        user = User.query.filter_by(username=username,password=password).first()
+        if (user != None):
+            users = User.query.all()
+            return {'users': [u.serialize() for u in users]}, 200
+
+        return {'message': 'Not authorized'}, 401
+
+
 api.add_resource(Register, '/api/register')
 api.add_resource(Login, '/api/login')
+api.add_resource(UserList, '/api/user')
 
 db.drop_all()
 db.create_all()
