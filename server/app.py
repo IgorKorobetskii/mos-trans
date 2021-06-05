@@ -29,7 +29,7 @@ def index():
     return send_from_directory('../build/', 'index.html')
 
 
-class Test(Resource):
+class Register(Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('username')
@@ -43,7 +43,25 @@ class Test(Resource):
         return {'message': new_user.as_dict()}, 200
 
 
-api.add_resource(Test, '/api/test')
+class Login(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('username')
+        parser.add_argument('password')
+        args = parser.parse_args()
+        print(args)
+
+        user = User.query.filter_by(username=args.username).first()
+        if (user == None):
+            return {'message': 'User not found'}, 404
+
+        if (user.password == args.password):
+            return {'message': 'Successfully logged in as '+str(user.id)}, 200
+        return {'message': 'Invalid username or password'}, 401
+
+
+api.add_resource(Register, '/api/register')
+api.add_resource(Login, '/api/login')
 
 db.drop_all()
 db.create_all()
